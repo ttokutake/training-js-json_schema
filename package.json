@@ -1,0 +1,12 @@
+{
+  "name": "training-js-json_schema",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^5.0.1",
+    "express": "^4.15.2",
+    "isomorphic-fetch": "^2.2.1",
+    "morgan": "^1.8.1"
+  }
+}
