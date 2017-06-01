@@ -1,16 +1,15 @@
 require('isomorphic-fetch');
 const Ajv = require('ajv');
 
-async function loadSchema(uri) {
-  const res = await fetch(uri);
-  return res.json();
-}
-
 async function validateAsync(schema, data) {
   console.log('schema: ', schema);
   console.log('data: ', data);
 
-  const ajv      = new Ajv({loadSchema: loadSchema});
+  const loadSchema = async (uri) => {
+    const res = await fetch(uri);
+    return res.json();
+  };
+  const ajv      = new Ajv({loadSchema});
   const validate = await ajv.compileAsync(schema);
   const isValid  = validate(data);
   console.log('isValid: ', isValid);
