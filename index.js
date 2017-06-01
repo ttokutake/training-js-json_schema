@@ -1,9 +1,23 @@
 require('isomorphic-fetch');
 const Ajv = require('ajv');
 
-const remoteSchema = 'http://localhost:3000/schema.json';
+async function loadSchema(uri) {
+  const res = await fetch(uri);
+  return res.json();
+}
 
-const schema = {
+async function validateAsync(schema, data) {
+  console.log('schema: ', schema);
+  console.log('data: ', data);
+
+  const ajv      = new Ajv({loadSchema: loadSchema});
+  const validate = await ajv.compileAsync(schema);
+  const isValid  = validate(data);
+  console.log('isValid: ', isValid);
+}
+
+const remoteSchema = 'http://localhost:3000/schema.json';
+const schema       = {
   type      : 'object',
   properties: {
     user   : {$ref: remoteSchema},
@@ -11,14 +25,4 @@ const schema = {
   },
 };
 
-const ajv = new Ajv({loadSchema: loadSchema});
-ajv.compileAsync(schema).then((validate) => {
-  const input = {user: {id: 0, name: 'Steve'}, comment: 'Awesome!'};
-  console.log('input:', input);
-  const valid = validate(input);
-  console.log('result:', valid);
-});
-
-function loadSchema(uri) {
-  return fetch(uri).then((res) => res.json())
-}
+validateAsync(schema, {user: {id: 0, name: 'Steve'}, comment: 'Awesome!'});
